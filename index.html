@@ -1,0 +1,119 @@
+<html>
+  <head>
+    <title>WEBGL - Rubik's Cube</title>
+    <script id="vertex-shader" type="x-shader/x-vertex">
+      attribute vec4 vPosition;
+      attribute vec4 vColor;
+      varying vec4 fColor;
+
+      uniform mat4 projectionMatrix;
+      uniform mat4 modelViewMatrix;
+
+      void main() {
+          fColor = vColor;
+          gl_Position = projectionMatrix * modelViewMatrix * vPosition;
+      }
+    </script>
+    <script id="fragment-shader" type="x-shader/x-fragment">
+      precision mediump float;
+
+      varying vec4 fColor;
+
+      void main () {
+        gl_FragColor = fColor;
+      }
+    </script>
+    <script type="text/javascript" src="MV.js"></script>
+    <script type="text/javascript" src="webgl-utils.js"></script>
+    <script type="text/javascript" src="initShaders.js"></script>
+    <script type="text/javascript" src="app.js"></script>
+    <script type="text/javascript" src="rotation.js"></script>
+  </head>
+
+  <body>
+    <div id="content" style="width: 800px;position: absolute; left: 30px;">
+      <h1>Rubik's Cube Move Notations</h1>
+      <p>L: the left face.</p>
+      <p>R: the right face</p>
+      <p>B: the bottom face</p>
+      <p>T: the top face</p>
+      <p>F: the front face</p>
+      <p>K: the back face</p>
+      <p>M, E, S are the faces in between</p>
+      <i>Lower case indicates the reversed rotation.</i>
+      <br/>
+      <p>Note:You can use your mouse to rotate the cube as a whole to </p>
+      <p>any desired angle, and you are able to control the rotations of</p>
+      <p>each plane using the buttons provided here. The faces are in fact </p>
+      <p>relative to your view of the cube. </p>
+      <p>To correctly load a file, please refresh the page before choosing the file.</p>
+      <p>Please enjoy the puzzle!</p>
+
+
+    </div>
+    <div id="content" style="width: 800px;position: absolute; left: 550px">
+      <canvas id = "game-surface" width = "450" height = "450"></canvas>
+      <br/>
+      <i>Current Cube Status:</i>
+      <div id="status" style="width: 450px;font-size: 20px;"></div>
+
+      <br/>
+      <button id= "LBtn" value = "L" style="width:40px; height:40px;font-size: 25px;">L</button>
+      <button id= "MBtn" value = "M" style="width:40px; height:40px;font-size: 25px;">M</button>
+      <button id= "RBtn" value = "r" style="width:40px; height:40px;font-size: 25px;">R</button>
+      <button id= "BBtn" value = "B" style="width:40px; height:40px;font-size: 25px;">B</button>
+      <button id= "EBtn" value = "E" style="width:40px; height:40px;font-size: 25px;">E</button>
+      <button id= "TBtn" value = "t" style="width:40px; height:40px;font-size: 25px;">T</button>
+      <button id= "FBtn" value = "F" style="width:40px; height:40px;font-size: 25px;">F</button>
+      <button id= "SBtn" value = "S" style="width:40px; height:40px;font-size: 25px;">S</button>
+      <button id= "KBtn" value = "k" style="width:40px; height:40px;font-size: 25px;">K</button>
+
+      <br/>
+      <button id= "lBtn" value = "l" style="width:40px; height:40px;font-size: 25px;">l</button>
+      <button id= "mBtn" value = "m" style="width:40px; height:40px;font-size: 25px;">m</button>
+      <button id= "rBtn" value = "R" style="width:40px; height:40px;font-size: 25px;">r</button>
+      <button id= "bBtn" value = "b" style="width:40px; height:40px;font-size: 25px;">b</button>
+      <button id= "eBtn" value = "e" style="width:40px; height:40px;font-size: 25px;">e</button>
+      <button id= "tBtn" value = "T" style="width:40px; height:40px;font-size: 25px;">t</button>
+      <button id= "fBtn" value = "f" style="width:40px; height:40px;font-size: 25px;">f</button>
+      <button id= "sBtn" value = "s" style="width:40px; height:40px;font-size: 25px;">s</button>
+      <button id= "kBtn" value = "K" style="width:40px; height:40px;font-size: 25px;">k</button>
+
+      <br/>
+      Please enter a number of turns: <input id="inputVal"
+      style="width:45px; height:25px;font-size: 20px" type="text">
+      <button id= "rdmBtn" style="width:180px; height:40px;font-size: 25px;">Randomize</button>
+      <br/>
+      <button id= "saveBtn" style="width:90px; height:40px;font-size: 25px;">Save</button>
+      <a download="CurState.txt" href="" id="downloadlink"></a>
+      <button id= "loadBtn" style="width:90px; height:40px;font-size: 25px;">Load</button>
+      <input type="file" id="files" name="files[]"/>
+      <output id="list"></output>
+      <script>
+        function handleFileSelect(evt) {
+        var files = evt.target.files;
+          var reader = new FileReader();
+          f = files[0];
+          reader.onload = (function(theFile) {
+            fileLoaded = true;
+            return function(e) {
+              fileContent = JSON.parse(reader.result);
+              var x, y, z;
+              for (x = 0; x < 3; x++) {
+                for (y = 0; y < 3; y++) {
+                  for (z = 0; z < 3; z++) {
+                    fileContent[x][y][z][4].matrix = true;
+                  }
+                }
+              }
+            }
+          })(f);
+          reader.readAsText(f);
+        }
+        document.getElementById('files').addEventListener('change', handleFileSelect, false);
+      </script>
+
+
+    </div>
+   </body>
+</html>
